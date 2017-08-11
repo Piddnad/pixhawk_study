@@ -119,39 +119,39 @@ public:
 	int print_status() override;
 
 private:
-	static constexpr float _dt_max = 0.02;	///< minimum allowed arrival time between non-IMU sensor readings  (sec)
-	bool 	_replay_mode;			///< true when we use replay data from a log
+	static constexpr float _dt_max = 0.02;	///< 非IMU传感器读数之间的最小允许到达时间0.02s  minimum allowed arrival time between non-IMU sensor readings  (sec)
+	bool 	_replay_mode;			///< 当我们使用来自日志的数据时，为真            true when we use replay data from a log
 	int32_t _publish_replay_mode;		///< set to 1 if we should publish replay messages for logging
 
-	float	_default_ev_pos_noise = 0.05f;	///< external vision position noise used when an invalid value is supplied (m)
-	float	_default_ev_ang_noise = 0.05f;	///< external vision angle noise used when an invalid value is supplied (rad)
+	float	_default_ev_pos_noise = 0.05f;	///< 外部视觉位置噪声 external vision position noise used when an invalid value is supplied (m)
+	float	_default_ev_ang_noise = 0.05f;	///< 外部视觉角度噪音 external vision angle noise used when an invalid value is supplied (rad)
 
-	// time slip monitoring
-	uint64_t integrated_time_us = 0;	///< integral of gyro delta time from start (uSec)
-	uint64_t start_time_us = 0;		///< system time at EKF start (uSec)
+	// 时间监控time slip monitoring
+	uint64_t integrated_time_us = 0;	///< 陀螺从启动开始的时间  integral of gyro delta time from start (uSec)
+	uint64_t start_time_us = 0;		///< EKF启动时的系统时间 system time at EKF start (uSec)
 
-	// Initialise time stamps used to send sensor data to the EKF and for logging
-	uint64_t _timestamp_mag_us = 0;		///< magnetomer data timestamp (uSec)
-	uint64_t _timestamp_balt_us = 0;	///< pressure altitude data timestamp (uSec)
-	uint8_t _invalid_mag_id_count = 0;	///< number of times an invalid magnetomer device ID has been detected
+	// 用于将传感器数据发送到EKF并进行记录的初始化时间戳Initialise time stamps used to send sensor data to the EKF and for logging
+	uint64_t _timestamp_mag_us = 0;		///< 磁体数据时间戳 magnetomer data timestamp (uSec)
+	uint64_t _timestamp_balt_us = 0;	///< 气压高度数据时间戳 pressure altitude data timestamp (uSec)
+	uint8_t _invalid_mag_id_count = 0;	///< 检测到无效磁电设备ID的次数number of times an invalid magnetomer device ID has been detected
 
-	// Used to down sample magnetometer data
-	float _mag_data_sum[3];			///< summed magnetometer readings (Gauss)
-	uint64_t _mag_time_sum_ms = 0;		///< summed magnetoemter time stamps (mSec)
-	uint8_t _mag_sample_count = 0;		///< number of magnetometer measurements summed during downsampling
+	// 用于降低样品磁力计数据Used to down sample magnetometer data
+	float _mag_data_sum[3];			///<总计的磁力计读数 summed magnetometer readings (Gauss)
+	uint64_t _mag_time_sum_ms = 0;		///<总结的磁电时间戳 summed magnetoemter time stamps (mSec)
+	uint8_t _mag_sample_count = 0;		///<磁力计测量的数量相加number of magnetometer measurements summed during downsampling
 	uint32_t _mag_time_ms_last_used =
-		0;	///< time stamp of the last averaged magnetometer measurement sent to the EKF (mSec)
+		0;	///<发送到EKF的最后平均磁力计测量的时间戳 time stamp of the last averaged magnetometer measurement sent to the EKF (mSec)
 
-	// Used to down sample barometer data
-	float _balt_data_sum;			///< summed pressure altitude readings (m)
-	uint64_t _balt_time_sum_ms = 0;		///< summed pressure altitude time stamps (mSec)
-	uint8_t _balt_sample_count = 0;		///< number of barometric altitude measurements summed
+	// 用于降低样本气压计数据 Used to down sample barometer data
+	float _balt_data_sum;			///<总和气压高度读数 summed pressure altitude readings (m)
+	uint64_t _balt_time_sum_ms = 0;		///<总和气压高度时间戳 summed pressure altitude time stamps (mSec)
+	uint8_t _balt_sample_count = 0;		///<气压高度测量数量相加 number of barometric altitude measurements summed
 	uint32_t _balt_time_ms_last_used =
 		0;	///< time stamp of the last averaged barometric altitude measurement sent to the EKF (mSec)
 
 	float _acc_hor_filt = 0.0f; 	///< low-pass filtered horizontal acceleration (m/sec**2)
 
-	// Used to check, save and use learned magnetometer biases
+	// 用于检查，保存和使用学习的磁力计偏差 Used to check, save and use learned magnetometer biases
 	hrt_abstime _last_magcal_us = 0;	///< last time the EKF was operating a mode that estimates magnetomer biases (uSec)
 	hrt_abstime _total_cal_time_us = 0;	///< accumulated calibration time since the last save
 	hrt_abstime _last_time_slip_us = 0;	///< Last time slip (uSec)
@@ -159,7 +159,7 @@ private:
 	bool _valid_cal_available[3] = {};	///< true when an unsaved valid calibration for the XYZ magnetometer bias is available
 	float _last_valid_variance[3] = {};	///< variances for the last valid magnetometer XYZ bias estimates (mGauss**2)
 
-	// Used to filter velocity innovations during pre-flight checks
+	// 用于 在飞行前检查时期的过滤速度更新Used to filter velocity innovations during pre-flight checks
 	Vector3f _vel_innov_lpf_ned = {};	///< Preflight low pass filtered velocity innovations (m/sec)
 	float _hgt_innov_lpf = 0.0f;		///< Preflight low pass filtered height innovation (m)
 	const float _innov_lpf_tau_inv = 0.2f;	///< Preflight low pass filter time constant inverse (1/sec)
@@ -179,12 +179,12 @@ private:
 	orb_advert_t _replay_pub;
 	orb_advert_t _ekf2_timestamps_pub;
 
-	/* Low pass filter for attitude rates */
-	math::LowPassFilter2p _lp_roll_rate;	///< Low pass filter applied to roll rates published on the control_state message
-	math::LowPassFilter2p _lp_pitch_rate;	///< Low pass filter applied to pitch rates published on the control_state message
-	math::LowPassFilter2p _lp_yaw_rate;	///< Low pass filter applied to yaw rates published on the control_state message
+	/* 低通过滤器的姿态率Low pass filter for attitude rates */
+	math::LowPassFilter2p _lp_roll_rate;	///< 滚转速率 Low pass filter applied to roll rates published on the control_state message
+	math::LowPassFilter2p _lp_pitch_rate;	///< 俯仰速率 Low pass filter applied to pitch rates published on the control_state message
+	math::LowPassFilter2p _lp_yaw_rate;	///< 偏航角速率 Low pass filter applied to yaw rates published on the control_state message
 
-	// Used to correct baro data for positional errors
+	//用于校正气压计数据的位置错误 Used to correct baro data for positional errors
 	Vector3f _vel_body_wind = {};	// XYZ velocity relative to wind in body frame (m/s)
 
 	Ekf _ekf;
@@ -205,7 +205,7 @@ private:
 	control::BlockParamExtFloat _gyro_noise;	///< IMU angular rate noise used for covariance prediction (rad/sec)
 	control::BlockParamExtFloat _accel_noise;	///< IMU acceleration noise use for covariance prediction (m/sec**2)
 
-	// process noise
+	//过程噪音 process noise
 	control::BlockParamExtFloat _gyro_bias_p_noise;	///< process noise for IMU rate gyro bias prediction (rad/sec**2)
 	control::BlockParamExtFloat _accel_bias_p_noise;///< process noise for IMU accelerometer bias prediction (m/sec**3)
 	control::BlockParamExtFloat _mage_p_noise;	///< process noise for earth magnetic field prediction (Gauss/sec)
@@ -224,7 +224,7 @@ private:
 	control::BlockParamExtFloat _vel_innov_gate;	///< GPS velocity innovation consistency gate size (STD)
 	control::BlockParamExtFloat _tas_innov_gate;	///< True Airspeed innovation consistency gate size (STD)
 
-	// control of magnetometer fusion
+	//控制磁力计融合 control of magnetometer fusion
 	control::BlockParamExtFloat _mag_heading_noise;	///< measurement noise used for simple heading fusion (rad)
 	control::BlockParamExtFloat _mag_noise;		///< measurement noise used for 3-axis magnetoemeter fusion (Gauss)
 	control::BlockParamExtFloat _eas_noise;		///< measurement noise used for airspeed fusion (m/sec)
@@ -247,12 +247,12 @@ private:
 	control::BlockParamExtFloat _requiredVdrift;	///< maximum acceptable vertical drift speed (m/s)
 	control::BlockParamExtInt _param_record_replay_msg;	///< turns on recording of ekf2 replay messages
 
-	// measurement source control
+	// 测量源控制measurement source control
 	control::BlockParamExtInt
 	_fusion_mode;		///< bitmasked integer that selects which of the GPS and optical flow aiding sources will be used
 	control::BlockParamExtInt _vdist_sensor_type;	///< selects the primary source for height data
 
-	// range finder fusion
+	// 测距仪融合range finder fusion
 	control::BlockParamExtFloat _range_noise;	///< observation noise for range finder measurements (m)
 	control::BlockParamExtFloat _range_noise_scaler; ///< scale factor from range to range noise (m/m)
 	control::BlockParamExtFloat _range_innov_gate;	///< range finder fusion innovation consistency gate size (STD)
@@ -265,12 +265,12 @@ private:
 	control::BlockParamExtFloat
 	_rng_aid_innov_gate;	///< gate size used for innovation consistency checks for range aid fusion (STD)
 
-	// vision estimate fusion
+	// 视力估计融合vision estimate fusion
 	control::BlockParamExtFloat _ev_pos_noise;	///< default position observation noise for exernal vision measurements (m)
 	control::BlockParamExtFloat _ev_ang_noise;	///< default angular observation noise for exernal vision measurements (rad)
 	control::BlockParamExtFloat _ev_innov_gate;	///< external vision position innovation consistency gate size (STD)
 
-	// optical flow fusion
+	// 光流融合optical flow fusion
 	control::BlockParamExtFloat
 	_flow_noise;	///< best quality observation noise for optical flow LOS rate measurements (rad/sec)
 	control::BlockParamExtFloat
@@ -279,7 +279,7 @@ private:
 	control::BlockParamExtFloat _flow_innov_gate;	///< optical flow fusion innovation consistency gate size (STD)
 	control::BlockParamExtFloat _flow_rate_max;	///< maximum valid optical flow rate (rad/sec)
 
-	// sensor positions in body frame
+	// 传感器位置sensor positions in body frame
 	control::BlockParamExtFloat _imu_pos_x;		///< X position of IMU in body frame (m)
 	control::BlockParamExtFloat _imu_pos_y;		///< Y position of IMU in body frame (m)
 	control::BlockParamExtFloat _imu_pos_z;		///< Z position of IMU in body frame (m)
@@ -296,24 +296,24 @@ private:
 	control::BlockParamExtFloat _ev_pos_y;		///< Y position of VI sensor focal point in body frame (m)
 	control::BlockParamExtFloat _ev_pos_z;		///< Z position of VI sensor focal point in body frame (m)
 
-	// control of airspeed and sideslip fusion
+	// 控制空速和侧滑融合control of airspeed and sideslip fusion
 	control::BlockParamFloat
 	_arspFusionThreshold; 	///< A value of zero will disabled airspeed fusion. Any positive value sets the minimum airspeed which will be used (m/sec)
 	control::BlockParamInt _fuseBeta;		///< Controls synthetic sideslip fusion, 0 disables, 1 enables
 
-	// output predictor filter time constants
+	// 输出预测滤波器时间常数output predictor filter time constants
 	control::BlockParamExtFloat _tau_vel;		///< time constant used by the output velocity complementary filter (sec)
 	control::BlockParamExtFloat _tau_pos;		///< time constant used by the output position complementary filter (sec)
 
-	// IMU switch on bias paameters
+	// IMU打开偏置参数IMU switch on bias paameters
 	control::BlockParamExtFloat _gyr_bias_init;	///< 1-sigma gyro bias uncertainty at switch on (rad/sec)
 	control::BlockParamExtFloat _acc_bias_init;	///< 1-sigma accelerometer bias uncertainty at switch on (m/sec**2)
 	control::BlockParamExtFloat _ang_err_init;	///< 1-sigma tilt error after initial alignment using gravity vector (rad)
 
-	// airspeed mode parameter
+	// 空速模式参数airspeed mode parameter
 	control::BlockParamInt _airspeed_mode;
 
-	// EKF saved XYZ magnetometer bias values
+	// EKF保存XYZ磁力计偏置值EKF saved XYZ magnetometer bias values
 	control::BlockParamFloat _mag_bias_x;		///< X magnetometer bias (mGauss)
 	control::BlockParamFloat _mag_bias_y;		///< Y magnetometer bias (mGauss)
 	control::BlockParamFloat _mag_bias_z;		///< Z magnetometer bias (mGauss)
@@ -329,7 +329,7 @@ private:
 	control::BlockParamExtFloat _bcoef_x;		///< ballistic coefficient along the X-axis (kg/m**2)
 	control::BlockParamExtFloat _bcoef_y;		///< ballistic coefficient along the Y-axis (kg/m**2)
 
-	// Corrections for static pressure position error where Ps_error = Ps_meas - Ps_truth
+	// 静压位置误差校正Corrections for static pressure position error where Ps_error = Ps_meas - Ps_truth
 	// Coef = Ps_error / Pdynamic, where Pdynamic = 1/2 * density * TAS**2
 	control::BlockParamFloat _aspd_max;		///< upper limit on airspeed used for correction  (m/s**2)
 	control::BlockParamFloat
@@ -341,7 +341,8 @@ private:
 
 };
 
-Ekf2::Ekf2():
+
+Ekf2::Ekf2(): //对所定义的变量进行初始化..
 	SuperBlock(nullptr, "EKF"),
 	_replay_mode(false),
 	_publish_replay_mode(0),
@@ -496,12 +497,13 @@ void Ekf2::run()
 	fds[0].fd = sensors_sub;
 	fds[0].events = POLLIN;
 
-	// initialise parameter cache
+	// 初始化参数缓存initialise parameter cache
 	updateParams();
 
 	// initialize data structures outside of loop
 	// because they will else not always be
 	// properly populated
+	// 初始化循环外的数据结构
 	sensor_combined_s sensors = {};
 	vehicle_gps_position_s gps = {};
 	airspeed_s airspeed = {};
@@ -519,20 +521,21 @@ void Ekf2::run()
 		int ret = px4_poll(fds, sizeof(fds) / sizeof(fds[0]), 1000);
 
 		if (!(fds[0].revents & POLLIN)) {
-			// no new data
+			// 没有新数据 no new data
 			continue;
 		}
 
 		if (ret < 0) {
-			// Poll error, sleep and try again
+			// POLL错误 重试 Poll error, sleep and try again
 			usleep(10000);
 			continue;
 
 		} else if (ret == 0) {
-			// Poll timeout or no new data, do nothing
+			// POLL超时/没有新数据 不做任何事 Poll timeout or no new data, do nothing
 			continue;
 		}
 
+		// 检查是否有更新信息，若更新则覆盖掉原有数据。
 		bool params_updated = false;
 		orb_check(params_sub, &params_updated);
 
@@ -553,7 +556,7 @@ void Ekf2::run()
 		bool vehicle_status_updated = false;
 
 		orb_copy(ORB_ID(sensor_combined), sensors_sub, &sensors);
-		// update all other topics if they have new data
+		// 如果有新数据 更新 update all other topics if they have new data
 
 		orb_check(status_sub, &vehicle_status_updated);
 
@@ -602,7 +605,7 @@ void Ekf2::run()
 			orb_copy(ORB_ID(vehicle_vision_attitude), ev_att_sub, &ev_att);
 		}
 
-		// in replay mode we are getting the actual timestamp from the sensor topic
+		// 在replay模式下，我们从传感器中获取实际的时间戳 in replay mode we are getting the actual timestamp from the sensor topic
 		hrt_abstime now = 0;
 
 		if (_replay_mode) {
@@ -612,7 +615,7 @@ void Ekf2::run()
 			now = hrt_absolute_time();
 		}
 
-		// push imu data into estimator
+		// 将IMU数据推送到估计器中 push imu data into estimator
 		float gyro_integral[3];
 		float gyro_dt = sensors.gyro_integral_dt / 1.e6f;
 		gyro_integral[0] = sensors.gyro_rad[0] * gyro_dt;
@@ -626,15 +629,15 @@ void Ekf2::run()
 		_ekf.setIMUData(now, sensors.gyro_integral_dt, sensors.accelerometer_integral_dt,
 				gyro_integral, accel_integral);
 
-		// read mag data
+		// 读磁力计中数据 read mag data
 		if (sensors.magnetometer_timestamp_relative == sensor_combined_s::RELATIVE_TIMESTAMP_INVALID) {
-			// set a zero timestamp to let the ekf replay program know that this data is not valid
+			// 设置零时间戳以让ekf replay知道此数据无效 set a zero timestamp to let the ekf replay program know that this data is not valid
 			_timestamp_mag_us = 0;
 
 		} else {
 			if ((sensors.timestamp + sensors.magnetometer_timestamp_relative) != _timestamp_mag_us) {
 				_timestamp_mag_us = sensors.timestamp + sensors.magnetometer_timestamp_relative;
-
+		 		// 如果磁力计ID存在持续变化，则重置偏置参数
 				// Reset learned bias parameters if there has been a persistant change in magnetometer ID
 				// Do not reset parmameters when armed to prevent potential time slips casued by parameter set
 				// and notification events
@@ -653,8 +656,8 @@ void Ekf2::run()
 				}
 
 				if ((vehicle_status.arming_state != vehicle_status_s::ARMING_STATE_ARMED) && (_invalid_mag_id_count > 100)) {
-					// the sensor ID used for the last saved mag bias is not confirmed to be the same as the current sensor ID
-					// this means we need to reset the learned bias values to zero
+					// 用于最后保存的磁偏置的传感器ID与当前传感器ID不同 the sensor ID used for the last saved mag bias is not confirmed to be the same as the current sensor ID
+					// 将偏差值重置为零 this means we need to reset the learned bias values to zero
 					_mag_bias_x.set(0.f);
 					_mag_bias_x.commit_no_notification();
 					_mag_bias_y.set(0.f);
@@ -667,7 +670,7 @@ void Ekf2::run()
 
 					PX4_INFO("Mag sensor ID changed to %i", _mag_bias_id.get());
 				}
-
+			        // 如果EKF最后使用的时间少于指定的时间，则累加数据，并在达到指定的间隔时推送平均值。
 				// If the time last used by the EKF is less than specified, then accumulate the
 				// data and push the average when the specified interval is reached.
 				_mag_time_sum_ms += _timestamp_mag_us / 1000;
@@ -679,7 +682,7 @@ void Ekf2::run()
 
 				if (mag_time_ms - _mag_time_ms_last_used > _params->sensor_interval_min_ms) {
 					float mag_sample_count_inv = 1.0f / (float)_mag_sample_count;
-					// calculate mean of measurements and correct for learned bias offsets
+					// 计算测量的平均值并校正偏差值 calculate mean of measurements and correct for learned bias offsets
 					float mag_data_avg_ga[3] = {_mag_data_sum[0] *mag_sample_count_inv - _mag_bias_x.get(),
 								    _mag_data_sum[1] *mag_sample_count_inv - _mag_bias_y.get(),
 								    _mag_data_sum[2] *mag_sample_count_inv - _mag_bias_z.get()
@@ -696,7 +699,7 @@ void Ekf2::run()
 			}
 		}
 
-		// read baro data
+		// 读取气压计数据 read baro data
 		if (sensors.baro_timestamp_relative == sensor_combined_s::RELATIVE_TIMESTAMP_INVALID) {
 			// set a zero timestamp to let the ekf replay program know that this data is not valid
 			_timestamp_balt_us = 0;
@@ -704,7 +707,8 @@ void Ekf2::run()
 		} else {
 			if ((sensors.timestamp + sensors.baro_timestamp_relative) != _timestamp_balt_us) {
 				_timestamp_balt_us = sensors.timestamp + sensors.baro_timestamp_relative;
-
+				
+                                // 如果EKF最后使用的时间少于指定的时间，则累加数据，并在达到指定的间隔时推送平均值
 				// If the time last used by the EKF is less than specified, then accumulate the
 				// data and push the average when the specified interval is reached.
 				_balt_time_sum_ms += _timestamp_balt_us / 1000;
@@ -713,16 +717,16 @@ void Ekf2::run()
 				uint32_t balt_time_ms = _balt_time_sum_ms / _balt_sample_count;
 
 				if (balt_time_ms - _balt_time_ms_last_used > (uint32_t)_params->sensor_interval_min_ms) {
-					// take mean across sample period
+					// 在抽样期间取平均值 take mean across sample period
 					float balt_data_avg = _balt_data_sum / (float)_balt_sample_count;
 
-					// estimate air density assuming typical 20degC ambient temperature
+					// 估计空气密度(20度环境温度) estimate air density assuming typical 20degC ambient temperature
 					orb_copy(ORB_ID(sensor_baro), sensor_baro_sub, &sensor_baro);
 					const float pressure_to_density = 100.0f / (CONSTANTS_AIR_GAS_CONST * (20.0f - CONSTANTS_ABSOLUTE_NULL_CELSIUS));
 					float rho = pressure_to_density * sensor_baro.pressure;
 					_ekf.set_air_density(rho);
 
-					// calculate static pressure error = Pmeas - Ptruth
+					// 计算静压误差= Pmeas - Ptruth calculate static pressure error = Pmeas - Ptruth
 					// model position error sensitivity as a body fixed ellipse with different scale in the positive and negtive X direction
 					float max_airspeed_sq = _aspd_max.get();
 					max_airspeed_sq *= max_airspeed_sq;
@@ -739,7 +743,7 @@ void Ekf2::run()
 									  _K_pstatic_coef_y.get() * fminf(_vel_body_wind(1) * _vel_body_wind(1), max_airspeed_sq) +
 									  _K_pstatic_coef_z.get() * fminf(_vel_body_wind(2) * _vel_body_wind(2), max_airspeed_sq));
 
-					// correct baro measurement using pressure error estimate and assuming sea level gravity
+					// 使用气压计误差估计并假设海平面重力来进行正确的气压测量 correct baro measurement using pressure error estimate and assuming sea level gravity
 					balt_data_avg += pstatic_err / (rho * 9.80665f);
 
 					// push to estimator
@@ -753,7 +757,7 @@ void Ekf2::run()
 			}
 		}
 
-		// read gps data if available
+		// 读取gps数据 read gps data if available
 		if (gps_updated) {
 			struct gps_message gps_msg = {};
 			gps_msg.time_usec = gps.timestamp;
@@ -777,7 +781,7 @@ void Ekf2::run()
 
 		}
 
-		// only set airspeed data if condition for airspeed fusion are met
+		//  只有满足空速融合条件时才设置空速数据  only set airspeed data if condition for airspeed fusion are met
 		bool fuse_airspeed = airspeed_updated && !vehicle_status.is_rotary_wing
 				     && _arspFusionThreshold.get() <= airspeed.true_airspeed_m_s && _arspFusionThreshold.get() >= 0.1f;
 
@@ -786,11 +790,11 @@ void Ekf2::run()
 			_ekf.setAirspeedData(airspeed.timestamp, airspeed.true_airspeed_m_s, eas2tas);
 		}
 
-		// only fuse synthetic sideslip measurements if conditions are met
+		//  只有满足条件才能合成侧滑测量 only fuse synthetic sideslip measurements if conditions are met
 		bool fuse_beta = !vehicle_status.is_rotary_wing && _fuseBeta.get();
 		_ekf.set_fuse_beta_flag(fuse_beta);
 
-		// let the EKF know if the vehicle motion is that of a fixed wing (forward flight only relative to wind)
+		// 让EKF知道飞行器运动是否是固定翼的运动（向前飞行只相对于风） let the EKF know if the vehicle motion is that of a fixed wing (forward flight only relative to wind)
 		_ekf.set_is_fixed_wing(!vehicle_status.is_rotary_wing);
 
 		if (optical_flow_updated) {
@@ -813,8 +817,8 @@ void Ekf2::run()
 			_ekf.setRangeData(range_finder.timestamp, range_finder.current_distance);
 		}
 
-		// get external vision data
-		// if error estimates are unavailable, use parameter defined defaults
+		// 获得外部视觉（系统）数据 get external vision data
+		// 如果错误估计不可用，使用参数定义的默认值 if error estimates are unavailable, use parameter defined defaults
 		if (vision_position_updated || vision_attitude_updated) {
 			ext_vision_message ev_data;
 			ev_data.posNED(0) = ev_pos.x;
@@ -823,11 +827,11 @@ void Ekf2::run()
 			matrix::Quatf q(ev_att.q);
 			ev_data.quat = q;
 
-			// position measurement error from parameters. TODO : use covariances from topic
+			// 位置测量误差参数 position measurement error from parameters. TODO : use covariances from topic
 			ev_data.posErr = _default_ev_pos_noise;
 			ev_data.angErr = _default_ev_ang_noise;
 
-			// use timestamp from external computer, clocks are synchronized when using MAVROS
+			// 使用外部计算机的时间戳，使用MAVROS时，时钟同步 use timestamp from external computer, clocks are synchronized when using MAVROS
 			_ekf.setExtVisionData(vision_position_updated ? ev_pos.timestamp : ev_att.timestamp, &ev_data);
 		}
 
@@ -838,7 +842,7 @@ void Ekf2::run()
 			_ekf.set_in_air_status(!vehicle_land_detected.landed);
 		}
 
-		// run the EKF update and output
+		// 运行EKF更新并输出 run the EKF update and output
 		if (_ekf.update()) {
 
 			// integrate time to monitor time slippage
